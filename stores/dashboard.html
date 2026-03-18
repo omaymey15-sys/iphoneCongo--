@@ -1,163 +1,77 @@
-<!-- stores/dashboard.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard store - iPhoneCongo</title>
+  <title>Dashboard Store - iPhoneCongo</title>
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="../assets/logo.svg" alt="iPhoneCongo Logo">
-      <h1>iPhone<span>Congo</span></h1>
-    </div>
-    <div class="header-actions">
-      <button id="logout-btn">Déconnexion</button>
-    </div>
-  </header>
 
-  <main>
-    <h2 id="store-title">Mon Store</h2>
+<header>
+  <div class="logo">
+    <img src="../assets/logo.svg" alt="Logo iPhoneCongo">
+    <h1>iPhone<span>Congo</span></h1>
+  </div>
+  <div class="header-actions">
+    <a href="../index.html" class="btn-mini call">Accueil</a>
+    <a href="../store.html" class="btn-mini whatsapp">Stores</a>
+  </div>
+</header>
 
-    <section class="store-stats">
-      <p>📦 <span id="product-count">0</span> produits</p>
-      <p>⏱️ <span id="new-count">0</span> nouveaux</p>
-    </section>
+<main>
+  <h2 id="store-name">Mon Store</h2>
 
-    <button id="add-product-btn">➕ Ajouter un produit</button>
+  <button class="btn-add-store" id="add-product">➕ Ajouter un produit</button>
 
-    <div class="products-row" id="products-row">
-      <!-- Cartes produits seront injectées ici -->
-    </div>
+  <div id="products-container" class="horiz-scroll">
+    <!-- Produits du store -->
+  </div>
+</main>
 
-    <!-- Modal ajout produit -->
-    <div id="product-modal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <span id="close-modal" class="close">&times;</span>
-        <h3>Ajouter un produit</h3>
-        <form id="product-form">
-          <label>Titre</label>
-          <input type="text" id="product-title" required>
+<script>
+const STORE_PRODUCTS_KEY = 'iphonecongo_store_products';
+const STORES_KEY = 'iphonecongo_stores';
 
-          <label>Catégorie</label>
-          <select id="product-category" required>
-            <option value="iphone">iPhone</option>
-            <option value="samsung">Samsung</option>
-            <option value="accessoire">Accessoire</option>
-          </select>
+// Pour simplifier, on prend le dernier store créé
+let stores = JSON.parse(localStorage.getItem(STORES_KEY)) || [];
+const currentStore = stores[stores.length-1];
 
-          <label>Prix ($)</label>
-          <input type="number" id="product-price" required>
+document.getElementById('store-name').textContent = currentStore.name;
 
-          <label>Condition</label>
-          <select id="product-condition" required>
-            <option value="Neuf">Neuf</option>
-            <option value="Occasion">Occasion</option>
-          </select>
+function displayProducts(){
+  const container = document.getElementById('products-container');
+  container.innerHTML = '';
 
-          <label>Image</label>
-          <input type="file" id="product-image" accept="image/*">
-
-          <button type="submit">Ajouter</button>
-        </form>
+  const storeProducts = JSON.parse(localStorage.getItem(STORE_PRODUCTS_KEY)) || {};
+  (storeProducts[currentStore.id] || []).forEach(p=>{
+    const div = document.createElement('div');
+    div.classList.add('horiz-card');
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.title}">
+      <div class="info">
+        <div class="title">${p.title}</div>
+        <div class="price">${p.price}</div>
       </div>
-    </div>
+    `;
+    container.appendChild(div);
+  });
+}
 
-  </main>
+document.getElementById('add-product').addEventListener('click', ()=>{
+  const title = prompt("Nom du produit :");
+  const price = prompt("Prix :");
+  const image = prompt("URL image :");
 
-  <script src="stores.js"></script>
-  <script>
-    const currentStore = JSON.parse(localStorage.getItem('current_store'));
-    if(!currentStore){
-      alert("Veuillez vous connecter !");
-      window.location.href = 'login.html';
-    }
+  if(title && price && image){
+    const storeProducts = JSON.parse(localStorage.getItem(STORE_PRODUCTS_KEY)) || {};
+    storeProducts[currentStore.id].push({title,price,image});
+    localStorage.setItem(STORE_PRODUCTS_KEY, JSON.stringify(storeProducts));
+    displayProducts();
+  }
+});
 
-    document.getElementById('store-title').innerText = currentStore.name;
-
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('current_store');
-      window.location.href = 'login.html';
-    });
-
-    const addBtn = document.getElementById('add-product-btn');
-    const modal = document.getElementById('product-modal');
-    const closeModal = document.getElementById('close-modal');
-    addBtn.addEventListener('click', () => modal.style.display = 'block');
-    closeModal.addEventListener('click', () => modal.style.display = 'none');
-
-    const productForm = document.getElementById('product-form');
-    const productsRow = document.getElementById('products-row');
-
-    function loadProducts(){
-      const allProducts = JSON.parse(localStorage.getItem('iphonecongo_store_products')) || {};
-      return allProducts[currentStore.id] || [];
-    }
-
-    function saveProducts(products){
-      const allProducts = JSON.parse(localStorage.getItem('iphonecongo_store_products')) || {};
-      allProducts[currentStore.id] = products;
-      localStorage.setItem('iphonecongo_store_products', JSON.stringify(allProducts));
-    }
-
-    function displayProducts(){
-      const products = loadProducts();
-      productsRow.innerHTML = '';
-      products.forEach(prod => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          ${prod.isNew ? '<div class="new-badge">✨ Nouveau</div>' : ''}
-          <img src="${prod.image}" alt="${prod.title}">
-          <div class="product-info">
-            <div class="product-title">${prod.title}</div>
-            <div class="product-price">${prod.price}</div>
-            <div class="product-condition">${prod.condition}</div>
-          </div>
-        `;
-        productsRow.appendChild(card);
-      });
-      document.getElementById('product-count').innerText = products.length;
-      const newCount = products.filter(p => p.isNew).length;
-      document.getElementById('new-count').innerText = newCount;
-    }
-
-    productForm.addEventListener('submit', function(e){
-      e.preventDefault();
-      const title = document.getElementById('product-title').value.trim();
-      const category = document.getElementById('product-category').value;
-      const price = Number(document.getElementById('product-price').value);
-      const condition = document.getElementById('product-condition').value;
-      const imageFile = document.getElementById('product-image').files[0];
-
-      if(!imageFile){
-        alert("Veuillez choisir une image !");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = function(){
-        const newProduct = {
-          id: Date.now(),
-          title, category, price, condition,
-          image: reader.result,
-          isNew: true,
-          date: new Date().toISOString()
-        };
-        const products = loadProducts();
-        products.push(newProduct);
-        saveProducts(products);
-        displayProducts();
-        modal.style.display = 'none';
-        productForm.reset();
-      }
-      reader.readAsDataURL(imageFile);
-    });
-
-    window.addEventListener('DOMContentLoaded', displayProducts);
-  </script>
+displayProducts();
+</script>
 </body>
 </html>
