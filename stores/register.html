@@ -1,4 +1,3 @@
-<!-- stores/register.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,89 +7,76 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="../assets/logo.svg" alt="iPhoneCongo Logo">
-      <h1>iPhone<span>Congo</span></h1>
-    </div>
-  </header>
 
-  <main>
-    <h2>Créez votre store</h2>
-    <form id="register-form">
-      <label>Nom du store *</label>
-      <input type="text" id="store-name" required>
+<header>
+  <div class="logo">
+    <img src="../assets/logo.svg" alt="Logo iPhoneCongo">
+    <h1>iPhone<span>Congo</span></h1>
+  </div>
+  <div class="header-actions">
+    <a href="../index.html" class="btn-mini call">Accueil</a>
+    <a href="../store.html" class="btn-mini whatsapp">Stores</a>
+  </div>
+</header>
 
-      <label>Ville *</label>
-      <input type="text" id="store-city" required>
+<main>
+  <h2>Créez votre store</h2>
 
-      <label>Adresse</label>
-      <input type="text" id="store-address">
+  <form id="register-form">
+    <label>Nom du store *</label>
+    <input type="text" id="store-name" required>
 
-      <label>Pseudo unique *</label>
-      <input type="text" id="store-pseudo" required>
+    <label>Pseudo unique *</label>
+    <input type="text" id="store-pseudo" required>
 
-      <label>Logo</label>
-      <input type="file" id="store-logo" accept="image/*">
+    <label>Ville *</label>
+    <input type="text" id="store-city" required>
 
-      <label>WhatsApp *</label>
-      <input type="text" id="store-whatsapp" placeholder="243XXXXXXXXX" required>
+    <label>WhatsApp *</label>
+    <input type="text" id="store-whatsapp" required>
 
-      <label>Mot de passe *</label>
-      <input type="password" id="store-password" required>
+    <label>Mot de passe *</label>
+    <input type="password" id="store-password" required>
 
-      <label>Confirmer mot de passe *</label>
-      <input type="password" id="store-password-confirm" required>
+    <label>Logo (URL)</label>
+    <input type="text" id="store-logo" placeholder="Ex: https://...">
 
-      <button type="submit">Créer mon store</button>
-    </form>
-    <p>Déjà un store ? <a href="login.html">Se connecter</a></p>
-  </main>
+    <button type="submit" class="btn-add-store">Créer mon store</button>
+  </form>
+</main>
 
-  <script src="stores.js"></script>
-  <script>
-    const form = document.getElementById('register-form');
+<script>
+const STORES_KEY = 'iphonecongo_stores';
+const STORE_PRODUCTS_KEY = 'iphonecongo_store_products';
 
-    form.addEventListener('submit', async function(e){
-      e.preventDefault();
+document.getElementById('register-form').addEventListener('submit', function(e){
+  e.preventDefault();
 
-      const name = document.getElementById('store-name').value.trim();
-      const city = document.getElementById('store-city').value.trim();
-      const address = document.getElementById('store-address').value.trim();
-      const pseudo = document.getElementById('store-pseudo').value.trim();
-      const whatsapp = document.getElementById('store-whatsapp').value.trim();
-      const password = document.getElementById('store-password').value;
-      const confirm = document.getElementById('store-password-confirm').value;
-      const logoFile = document.getElementById('store-logo').files[0];
+  const name = document.getElementById('store-name').value.trim();
+  const pseudo = document.getElementById('store-pseudo').value.trim();
+  const city = document.getElementById('store-city').value.trim();
+  const whatsapp = document.getElementById('store-whatsapp').value.trim();
+  const password = document.getElementById('store-password').value.trim();
+  const logo = document.getElementById('store-logo').value.trim() || '../assets/logo.svg';
 
-      if(password !== confirm){
-        alert("Les mots de passe ne correspondent pas !");
-        return;
-      }
+  if(!name || !pseudo || !city || !whatsapp || !password){
+    return alert('Remplissez tous les champs obligatoires !');
+  }
 
-      let logoUrl = '';
-      if(logoFile){
-        // Convert image to Base64 (no backend)
-        const reader = new FileReader();
-        reader.onloadend = function(){
-          logoUrl = reader.result;
-          registerStore({name, city, address, pseudo, whatsapp, password, logo: logoUrl});
-        }
-        reader.readAsDataURL(logoFile);
-      } else {
-        registerStore({name, city, address, pseudo, whatsapp, password, logo: logoUrl});
-      }
-    });
+  let stores = JSON.parse(localStorage.getItem(STORES_KEY)) || [];
+  let storeProducts = JSON.parse(localStorage.getItem(STORE_PRODUCTS_KEY)) || {};
 
-    function registerStore(store){
-      const stores = JSON.parse(localStorage.getItem('iphonecongo_stores')) || [];
-      store.id = Date.now();
-      store.date = new Date().toISOString();
-      stores.push(store);
-      localStorage.setItem('iphonecongo_stores', JSON.stringify(stores));
-      alert("Store créé avec succès !");
-      window.location.href = 'login.html';
-    }
-  </script>
+  const id = stores.length ? Math.max(...stores.map(s=>s.id))+1 : 1001;
+
+  stores.push({id,name,pseudo,city,whatsapp,password,logo,date:new Date().toISOString()});
+  storeProducts[id] = [];
+
+  localStorage.setItem(STORES_KEY, JSON.stringify(stores));
+  localStorage.setItem(STORE_PRODUCTS_KEY, JSON.stringify(storeProducts));
+
+  alert('Store créé avec succès !');
+  window.location.href = 'dashboard.html';
+});
+</script>
 </body>
 </html>
