@@ -1,0 +1,50 @@
+<!-- admin/login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - iPhoneCongo</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <main style="max-width:400px; margin:2rem auto;">
+
+    <h2 style="text-align:center; margin-bottom:1.5rem;">Administration iPhoneCongo</h2>
+
+    <form id="admin-login-form" style="background:var(--white); padding:1.5rem; border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+
+      <label for="username" style="font-weight:600;">Utilisateur</label>
+      <input type="text" id="username" placeholder="admin" required style="width:100%; margin-bottom:1rem; padding:0.6rem; border-radius:var(--radius-md); border:1px solid var(--light-gray);">
+
+      <label for="password" style="font-weight:600;">Mot de passe</label>
+      <input type="password" id="password" placeholder="••••••••" required style="width:100%; margin-bottom:1.2rem; padding:0.6rem; border-radius:var(--radius-md); border:1px solid var(--light-gray);">
+
+      <button type="submit" style="width:100%; padding:0.8rem; background:var(--primary); color:white; font-weight:600; border:none; border-radius:var(--radius-xl); cursor:pointer;">Se connecter</button>
+
+    </form>
+
+  </main>
+
+  <script src="admin.js"></script>
+  <script>
+    document.getElementById('admin-login-form').addEventListener('submit', function(e){
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      // Utilisateur admin fixe pour demo
+      const ADMIN_USER = 'admin';
+      const ADMIN_PASS = 'demo123';
+
+      if(username === ADMIN_USER && password === ADMIN_PASS){
+        localStorage.setItem('iphonecongo_admin', 'true');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Utilisateur ou mot de passe incorrect.');
+      }
+    });
+  </script>
+</body>
+</html>
