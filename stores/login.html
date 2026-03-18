@@ -1,0 +1,55 @@
+<!-- stores/login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion store - iPhoneCongo</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.svg" alt="iPhoneCongo Logo">
+      <h1>iPhone<span>Congo</span></h1>
+    </div>
+  </header>
+
+  <main>
+    <h2>Connexion store</h2>
+    <form id="login-form">
+      <label>Pseudo</label>
+      <input type="text" id="login-pseudo" required>
+
+      <label>Mot de passe</label>
+      <input type="password" id="login-password" required>
+
+      <button type="submit">Se connecter</button>
+    </form>
+    <p>Pas de store ? <a href="register.html">Créer un store</a></p>
+  </main>
+
+  <script src="stores.js"></script>
+  <script>
+    const form = document.getElementById('login-form');
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      const pseudo = document.getElementById('login-pseudo').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      const stores = JSON.parse(localStorage.getItem('iphonecongo_stores')) || [];
+      const store = stores.find(s => s.pseudo === pseudo && s.password === password);
+
+      if(store){
+        localStorage.setItem('current_store', JSON.stringify(store));
+        alert(`Bienvenue ${store.name} !`);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert("Pseudo ou mot de passe incorrect !");
+      }
+    });
+  </script>
+</body>
+</html>
