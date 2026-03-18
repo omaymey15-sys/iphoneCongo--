@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhoneCongo - Stores</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body><!-- HEADER --><header>
+    <div class="logo">iPhone<span>Congo</span></div>
+    <div>
+        <a href="index.html">Accueil</a>
+    </div>
+</header><!-- SEARCH --><div class="store-search">
+    <input type="text" id="store-search" placeholder="🔍 Rechercher store ou produit...">
+    <a href="stores/register.html" class="btn-add">➕ Ajouter un store</a>
+</div><!-- FILTRES --><div class="filters">
+    <div class="hours">
+        <button onclick="setHourFilter(1)">1h</button>
+        <button onclick="setHourFilter(24)">24h</button>
+        <button onclick="setHourFilter(48)">48h</button>
+        <button onclick="setHourFilter(168)">Semaine</button>
+    </div><div class="city-filter">
+    <input type="text" id="city" placeholder="📍 Ville...">
+</div>
+
+</div><!-- RESULT --><p id="result-count">0 stores trouvés</p><!-- LISTE STORES --><div id="stores"></div><script src="store.js"></script></body>
+</html>
