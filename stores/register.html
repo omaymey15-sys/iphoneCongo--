@@ -1,0 +1,96 @@
+<!-- stores/register.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créer un store - iPhoneCongo</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.svg" alt="iPhoneCongo Logo">
+      <h1>iPhone<span>Congo</span></h1>
+    </div>
+  </header>
+
+  <main>
+    <h2>Créez votre store</h2>
+    <form id="register-form">
+      <label>Nom du store *</label>
+      <input type="text" id="store-name" required>
+
+      <label>Ville *</label>
+      <input type="text" id="store-city" required>
+
+      <label>Adresse</label>
+      <input type="text" id="store-address">
+
+      <label>Pseudo unique *</label>
+      <input type="text" id="store-pseudo" required>
+
+      <label>Logo</label>
+      <input type="file" id="store-logo" accept="image/*">
+
+      <label>WhatsApp *</label>
+      <input type="text" id="store-whatsapp" placeholder="243XXXXXXXXX" required>
+
+      <label>Mot de passe *</label>
+      <input type="password" id="store-password" required>
+
+      <label>Confirmer mot de passe *</label>
+      <input type="password" id="store-password-confirm" required>
+
+      <button type="submit">Créer mon store</button>
+    </form>
+    <p>Déjà un store ? <a href="login.html">Se connecter</a></p>
+  </main>
+
+  <script src="stores.js"></script>
+  <script>
+    const form = document.getElementById('register-form');
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+
+      const name = document.getElementById('store-name').value.trim();
+      const city = document.getElementById('store-city').value.trim();
+      const address = document.getElementById('store-address').value.trim();
+      const pseudo = document.getElementById('store-pseudo').value.trim();
+      const whatsapp = document.getElementById('store-whatsapp').value.trim();
+      const password = document.getElementById('store-password').value;
+      const confirm = document.getElementById('store-password-confirm').value;
+      const logoFile = document.getElementById('store-logo').files[0];
+
+      if(password !== confirm){
+        alert("Les mots de passe ne correspondent pas !");
+        return;
+      }
+
+      let logoUrl = '';
+      if(logoFile){
+        // Convert image to Base64 (no backend)
+        const reader = new FileReader();
+        reader.onloadend = function(){
+          logoUrl = reader.result;
+          registerStore({name, city, address, pseudo, whatsapp, password, logo: logoUrl});
+        }
+        reader.readAsDataURL(logoFile);
+      } else {
+        registerStore({name, city, address, pseudo, whatsapp, password, logo: logoUrl});
+      }
+    });
+
+    function registerStore(store){
+      const stores = JSON.parse(localStorage.getItem('iphonecongo_stores')) || [];
+      store.id = Date.now();
+      store.date = new Date().toISOString();
+      stores.push(store);
+      localStorage.setItem('iphonecongo_stores', JSON.stringify(stores));
+      alert("Store créé avec succès !");
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
