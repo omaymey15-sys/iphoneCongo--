@@ -1,0 +1,96 @@
+<!-- stores/store-view.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store - iPhoneCongo</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.svg" alt="iPhoneCongo Logo">
+      <h1>iPhone<span>Congo</span></h1>
+    </div>
+    <div class="header-actions">
+      <a href="store.html">← Retour</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="store-block">
+      <div class="store-header">
+        <div class="store-info">
+          <img id="store-logo" class="store-mini-logo" src="" alt="Logo store">
+          <div>
+            <h4 id="store-name"></h4>
+            <p id="store-city"></p>
+          </div>
+        </div>
+        <a id="store-whatsapp" class="btn-mini whatsapp" target="_blank">WhatsApp</a>
+        <a id="store-call" class="btn-mini call" href="">Appel</a>
+      </div>
+    </section>
+
+    <section id="products-section" class="horiz-scroll">
+      <!-- Produits injectés ici -->
+    </section>
+  </main>
+
+  <script src="stores.js"></script>
+  <script>
+    // Vérifier le store sélectionné
+    const urlParams = new URLSearchParams(window.location.search);
+    const storeId = urlParams.get('id');
+
+    if(!storeId){
+      alert("Store non trouvé !");
+      window.location.href = 'store.html';
+    }
+
+    const stores = JSON.parse(localStorage.getItem('iphonecongo_stores')) || [];
+    const store = stores.find(s => s.id == storeId);
+
+    if(!store){
+      alert("Store non trouvé !");
+      window.location.href = 'store.html';
+    }
+
+    // Remplir infos store
+    document.getElementById('store-logo').src = store.logo || '../assets/logo.svg';
+    document.getElementById('store-name').innerText = store.name;
+    document.getElementById('store-city').innerText = store.city;
+    document.getElementById('store-whatsapp').href = `https://wa.me/${store.whatsapp}?text=Bonjour,%20je%20suis%20intéressé%20par%20vos%20produits`;
+    document.getElementById('store-call').href = `tel:+${store.whatsapp}`;
+
+    // Charger produits
+    const allProducts = JSON.parse(localStorage.getItem('iphonecongo_store_products')) || {};
+    const products = allProducts[store.id] || [];
+
+    const productsSection = document.getElementById('products-section');
+
+    function createProductCard(prod){
+      const card = document.createElement('div');
+      card.className = 'horiz-card';
+      card.innerHTML = `
+        ${prod.isNew ? '<div class="new-badge">✨ Nouveau</div>' : ''}
+        <img src="${prod.image}" alt="${prod.title}">
+        <div class="info">
+          <div class="title">${prod.title}</div>
+          <div class="price">${prod.price}</div>
+          <div class="product-condition">${prod.condition}</div>
+          <div class="product-actions">
+            <a class="btn-mini whatsapp" href="https://wa.me/${store.whatsapp}?text=Bonjour,%20je%20veux%20plus%20d'infos%20sur%20${encodeURIComponent(prod.title)}" target="_blank">WhatsApp</a>
+            <a class="btn-mini call" href="tel:+${store.whatsapp}">Appel</a>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    products.forEach(p => productsSection.appendChild(createProductCard(p)));
+
+  </script>
+</body>
+</html>
