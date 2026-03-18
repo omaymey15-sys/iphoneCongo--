@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhoneCongo - Accueil</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <img src="assets/logo.svg" alt="Logo iPhoneCongo">
+        <h1>iPhone<span>Congo</span></h1>
+    </div>
+    <div class="header-actions">
+        <a href="store.html" class="nav-link">Stores</a>
+        <i class="search-icon" id="open-search">🔍</i>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero-mini">
+    <h2>iPhoneCongo</h2>
+    <p>Lubumbashi • Kolwezi</p>
+</section>
+
+<!-- BARRE DE RECHERCHE -->
+<div class="search-bar" id="search-bar" style="display:none;">
+    <i>🔍</i>
+    <input type="text" id="search" placeholder="Rechercher un produit...">
+    <i class="fa-times" id="close-search">✕</i>
+</div>
+
+<!-- BOUTON AJOUTER STORE -->
+<a href="stores/register.html" class="btn-add-store"><i>➕</i> Ajouter un store</a>
+
+<!-- SECTIONS PRODUITS -->
+<main>
+    <!-- Nouveautés -->
+    <section class="horiz-section">
+        <div class="section-header">
+            <h3 class="section-title">✨ Nouveautés</h3>
+            <span class="section-count" id="count-new">0</span>
+        </div>
+        <div class="horiz-scroll" id="products"></div>
+    </section>
+
+    <!-- iPhone -->
+    <section class="horiz-section">
+        <div class="section-header">
+            <h3 class="section-title">📱 iPhone</h3>
+            <span class="section-count" id="count-iphone">0</span>
+        </div>
+        <div class="horiz-scroll" id="iphone-products"></div>
+    </section>
+
+    <!-- Samsung -->
+    <section class="horiz-section">
+        <div class="section-header">
+            <h3 class="section-title">🤖 Samsung</h3>
+            <span class="section-count" id="count-samsung">0</span>
+        </div>
+        <div class="horiz-scroll" id="samsung-products"></div>
+    </section>
+
+    <!-- Accessoires -->
+    <section class="horiz-section">
+        <div class="section-header">
+            <h3 class="section-title">🎧 Accessoires</h3>
+            <span class="section-count" id="count-accessories">0</span>
+        </div>
+        <div class="horiz-scroll" id="accessories-products"></div>
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+    © 2024 iPhoneCongo | 📞 <a href="https://wa.me/243972685669">+243 972 685 669</a>
+</footer>
+
+<script src="script.js"></script>
+<script>
+    // Ouvrir/fermer barre de recherche
+    const openSearch = document.getElementById('open-search');
+    const closeSearch = document.getElementById('close-search');
+    const searchBar = document.getElementById('search-bar');
+
+    openSearch.addEventListener('click', () => { searchBar.style.display = 'flex'; });
+    closeSearch.addEventListener('click', () => { searchBar.style.display = 'none'; });
+</script>
+
+</body>
+</html>
